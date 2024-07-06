@@ -163,6 +163,70 @@ public class MainActivity extends AppCompatActivity {
             tvPhone.setText(phone);
             tvEmail.setText(email);
 
+            updateBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //update data
+                    String name = edName.getText().toString();
+                    String phone = edPhone.getText().toString();
+                    String email = edEmail.getText().toString();
+                    String url = "https://hey-php1.000webhostapp.com/apps/update.php?name="+name+"&phone="+
+                            phone+"&email="+email+"&id="+id;
+
+                    progressBar.setVisibility(View.VISIBLE);
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                              progressBar.setVisibility(View.GONE);
+                              new AlertDialog.Builder(MainActivity.this)
+                                      .setTitle("Updated Data")
+                                      .setMessage(s)
+                                      .show();
+
+                              loadData();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                              Log.d("server Err: ",volleyError.toString());
+                        }
+                    });
+
+                    RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+                    requestQueue.add(stringRequest);
+                }
+            });
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //delete data
+
+                    String url = "https://hey-php1.000webhostapp.com/apps/delete.php?id="+id;
+
+                    progressBar.setVisibility(View.VISIBLE);
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            progressBar.setVisibility(View.GONE);
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("Deleted Data")
+                                    .setMessage(s)
+                                    .show();
+
+                            loadData();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Log.d("server Err: ",volleyError.toString());
+                        }
+                    });
+
+                    RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+                    requestQueue.add(stringRequest);
+                }
+            });
+
             return myView;
         }
     };
